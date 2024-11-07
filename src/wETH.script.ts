@@ -74,13 +74,13 @@ const txn1 = await Mina.transaction(deployerAccount, async () => {
     });
 
     await weth.initialize(
-        tokenAdmin,
+        tokenAdminContractAddress,
         UInt8.from(100),
         Bool(false)
     );
 });
 await txn1.prove();
-await txn1.sign([deployerKey, wethPrivateKey, tokenAdminKey]).send();
+await txn1.sign([deployerKey, wethPrivateKey, tokenAdminKey, tokenAdminContractPrivKey]).send();
 
 const txn2 = await Mina.transaction(senderAccount, async () => {
     await weth.mint(mintReceiverAddress, UInt64.from(1));
