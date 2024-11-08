@@ -75,15 +75,18 @@ const txn1 = await Mina.transaction(deployerAccount, async () => {
 
     await weth.initialize(
         tokenAdminContractAddress,
-        UInt8.from(100),
+        UInt8.from(18),
         Bool(false)
     );
 });
 await txn1.prove();
 await txn1.sign([deployerKey, wethPrivateKey, tokenAdminKey, tokenAdminContractPrivKey]).send();
+console.log("Deployed the contracts")
 
 const txn2 = await Mina.transaction(senderAccount, async () => {
-    await weth.mint(mintReceiverAddress, UInt64.from(1));
+    AccountUpdate.fundNewAccount(deployerAccount, 1);
+    await weth.mint(mintReceiverAddress, UInt64.from(120e6));
 });
 await txn2.prove();
-await txn2.sign([deployerKey, senderKey, wethPrivateKey, tokenAdminKey, tokenAdminContractPrivKey]).send();
+await txn2.sign([deployerKey, senderKey, wethPrivateKey, tokenAdminKey, tokenAdminContractPrivKey, mintReceiverPriv]).send();
+console.log("Minted tokens")
